@@ -10,8 +10,28 @@ M5Canvas MaskSprite(&Sprite);
 
 MFRC522 mfrc522(0x28); // MFRC522のインスタンスを作成
 
-
 int nocard = 10;
+
+void MaskReveal() {
+  int boxWidth = 20;  // 箱の幅
+  int boxHeight = 20;  // 箱の高さ
+
+  for(int i = 0; i < 100; i++){
+    // ランダムな位置を計算
+    int x = random(display.width() - boxWidth);
+    int y = random(display.height() - boxHeight);
+    MaskSprite.fillRect(x, y, boxWidth, boxHeight, TFT_WHITE);
+    BaseSprite.pushSprite(0,0);
+    MaskSprite.pushSprite(0,0,TFT_WHITE);
+    Sprite.pushSprite(0, 0);
+  }
+    MaskSprite.fillRect(0, 0, display.width(), display.height(), TFT_WHITE);
+    BaseSprite.pushSprite(0,0);
+    MaskSprite.pushSprite(0,0,TFT_WHITE);
+    Sprite.pushSprite(0, 0);
+    delay(1000); // 小さな遅延を挟む（必要に応じて調整）
+}
+
 
 void setup()
 {
@@ -66,24 +86,4 @@ void loop() {
         Sprite.pushSprite(0, 0);
     }
     //delay(20); // 200ミリ秒待機
-}
-
-void MaskReveal() {
-  int boxWidth = 20;  // 箱の幅
-  int boxHeight = 20;  // 箱の高さ
-
-  for(int i = 0; i < 100; i++){
-    // ランダムな位置を計算
-    int x = random(display.width() - boxWidth);
-    int y = random(display.height() - boxHeight);
-    MaskSprite.fillRect(x, y, boxWidth, boxHeight, TFT_WHITE);
-    BaseSprite.pushSprite(0,0);
-    MaskSprite.pushSprite(0,0,TFT_WHITE);
-    Sprite.pushSprite(0, 0);
-  }
-    MaskSprite.fillRect(0, 0, display.width(), display.height(), TFT_WHITE);
-    BaseSprite.pushSprite(0,0);
-    MaskSprite.pushSprite(0,0,TFT_WHITE);
-    Sprite.pushSprite(0, 0);
-    delay(1000); // 小さな遅延を挟む（必要に応じて調整）
 }
