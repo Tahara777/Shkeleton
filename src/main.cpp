@@ -10,11 +10,7 @@ MFRC522_I2C mfrc522(0x28, -1); // Create MFRC522 instance.
 #define PIN 26 
 #define NUMPIXELS 21 //LEDの数を指定
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800); //800kHzでNeoPixelを駆動
-#define Fingertip2WristMode = 1
-#define Wrist2FingertipMode = 2
-#define ChargeMode = 3
 
-int mode = 1;
 int ledBrightness = 0; // LEDの明るさカウンタ
 int ledPosition = 0; // LEDの位置カウンタ
 
@@ -60,7 +56,7 @@ void loop() {
   if(isNewCard()){
     CardID = identifyCard();
     isCard = true;
-    startMillis = currentMillis; // 正しくグローバル変数を更新
+    startMillis = currentMillis; 
   }
 
   if(isCard){
@@ -111,7 +107,7 @@ void LEDcontrol(int ID, unsigned long StartTime, unsigned long CurrentTime){
   }
 	switch(ID){
       case 1:
-      if((CurrentTime - previousLEDTime) > 100){
+      if((CurrentTime - previousLEDTime) > 100){//100ms間隔で更新
         Fingertip2Wrist(ledPosition, ledBrightness);
         previousLEDTime = CurrentTime;
         //M5.Lcd.println(previousLEDTime);
