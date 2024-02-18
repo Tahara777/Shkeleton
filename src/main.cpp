@@ -15,8 +15,9 @@ Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800); //800kHzでNeoPi
 #define ChargeMode = 3
 
 int mode = 1;
-int cntL = 0;//光演出のカウント
-int cntP = 0;//LEDの場所のカウント
+int ledBrightness = 0; // LEDの明るさカウンタ
+int ledPosition = 0; // LEDの位置カウンタ
+
 
 //LED番号再割り当て
 int thumbLine[5] = {2,1,0};
@@ -30,12 +31,12 @@ bool isCard = false;//カード読み取りフラグ
 #define ace "155 43 9 12"
 int CardID = 0;
 float TotalTime = 5;//演出合計時間
-unsigned long startMills = 0;
-unsigned long currentMills = 0;
+unsigned long startMillis = 0;
+unsigned long currentMillis = 0;
 unsigned long previousLEDTime= 0;
 
 
-void Fingertip2Wrist(int cntP, int cntL);
+void Fingertip2Wrist(int ledPosition, int ledBrightness);
 bool isNewCard();
 int identifyCard();
 void LEDcontrol(int B, unsigned long C, unsigned long D);
@@ -54,19 +55,17 @@ void setup() {
 
 // ---------------------------------------------------------------
 void loop() {
-  currentMills = millis(); // 現在のミリ秒を取得
-  //Serial.println(CardID);
-  
+  currentMillis = millis(); // 現在のミリ秒を取得
+    
   if(isNewCard()){
     CardID = identifyCard();
     isCard = true;
-    //M5.Lcd.println(2);
-    startMills = currentMills; // 正しくグローバル変数を更新
+    startMillis = currentMillis; // 正しくグローバル変数を更新
   }
 
   if(isCard){
-    LEDcontrol(CardID, startMills, currentMills);
-    if((currentMills - startMills) > 5000){
+    LEDcontrol(CardID, startMillis, currentMillis);
+    if((currentMillis - startMillis) > 5000){
       isCard = false; // isCardをbooleanで更新
     }
   }
@@ -107,23 +106,23 @@ int identifyCard(){
 // ---------------------------------------------------------------
 void LEDcontrol(int ID, unsigned long StartTime, unsigned long CurrentTime){
   if(StartTime == CurrentTime){
-    cntL =100;
-    cntP =0;
+    ledBrightness =100;
+    ledPosition =0;
   }
 	switch(ID){
       case 1:
       if((CurrentTime - previousLEDTime) > 100){
-        Fingertip2Wrist(cntP, cntL);
+        Fingertip2Wrist(ledPosition, ledBrightness);
         previousLEDTime = CurrentTime;
         //M5.Lcd.println(previousLEDTime);
 
-          cntL +=10;
-          cntP +=1;
-        if(cntP >= 5){
-          cntP = 0;
+          ledBrightness +=10;
+          ledPosition +=1;
+        if(ledPosition >= 5){
+          ledPosition = 0;
         }
-        if(cntL >= 250){
-          cntL = 250;
+        if(ledBrightness >= 250){
+          ledBrightness = 250;
         }
         break;
   
@@ -134,19 +133,19 @@ void LEDcontrol(int ID, unsigned long StartTime, unsigned long CurrentTime){
     }  
 }
 // ---------------------------------------------------------------
-void Fingertip2Wrist(int cntP_a, int cntL_a){
+void Fingertip2Wrist(int ledPosition_a, int ledBrightness_a){
   pixels.clear(); // NeoPixelのリセット
-  if(cntP_a < 2){
-    pixels.setPixelColor(indexFingerLine[cntP_a], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
-    pixels.setPixelColor(middleFingerLine[cntP_a], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
-    pixels.setPixelColor(ringFingerLine[cntP_a], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
+  if(ledPosition_a < 2){
+    pixels.setPixelColor(indexFingerLine[ledPosition_a], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
+    pixels.setPixelColor(middleFingerLine[ledPosition_a], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
+    pixels.setPixelColor(ringFingerLine[ledPosition_a], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
   }
   else{
-    pixels.setPixelColor(thumbLine[cntP_a - 2], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
-    pixels.setPixelColor(indexFingerLine[cntP_a], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
-    pixels.setPixelColor(middleFingerLine[cntP_a], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
-    pixels.setPixelColor(ringFingerLine[cntP_a], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
-    pixels.setPixelColor(littleFingerLine[cntP_a - 2], pixels.Color(cntL_a/2, cntL_a/3, cntL_a)); // i番目の色を設定
+    pixels.setPixelColor(thumbLine[ledPosition_a - 2], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
+    pixels.setPixelColor(indexFingerLine[ledPosition_a], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
+    pixels.setPixelColor(middleFingerLine[ledPosition_a], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
+    pixels.setPixelColor(ringFingerLine[ledPosition_a], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
+    pixels.setPixelColor(littleFingerLine[ledPosition_a - 2], pixels.Color(ledBrightness_a/2, ledBrightness_a/3, ledBrightness_a)); // i番目の色を設定
   }
     pixels.setBrightness(60);// 0~255の範囲で明るさを設定 
     pixels.show();   //LEDに色を反映
