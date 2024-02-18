@@ -6,6 +6,7 @@
 #define NUMPIXELS 21 //LEDの数を指定
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800); //800kHzでNeoPixelを駆動
 
+
 /**RFID**/
 MFRC522_I2C mfrc522(0x28, -1); // Create MFRC522 instance.
 int nocard = 0;
