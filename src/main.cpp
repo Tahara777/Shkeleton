@@ -30,12 +30,13 @@ float TotalTime = 5;//演出合計時間
 unsigned long startMillis = 0;
 unsigned long currentMillis = 0;
 unsigned long previousLEDTime= 0;
-
+unsigned long previousLCDTime= 0;
 
 void Fingertip2Wrist(int ledPosition, int ledBrightness);
 bool isNewCard();
 int identifyCard();
 void LEDcontrol(int B, unsigned long C, unsigned long D);
+void LCDcontrol(int B, unsigned long C, unsigned long D);
 void uid_display_proc();
 
 // ---------------------------------------------------------------
@@ -53,21 +54,21 @@ void setup() {
 void loop() {
   currentMillis = millis(); // 現在のミリ秒を取得
     
-  if(isNewCard()){
-    CardID = identifyCard();
-    isCard = true;
-    startMillis = currentMillis; 
-  }
+  if(!isCard){
+    pixels.clear(); // NeoPixelのリセット
 
-  if(isCard){
-    LEDcontrol(CardID, startMillis, currentMillis);
-    if((currentMillis - startMillis) > 5000){
-      isCard = false; // isCardをbooleanで更新
+    if(isNewCard()){
+      CardID = identifyCard();
+      isCard = true;
+      startMillis = currentMillis; 
     }
   }
   else{
-    pixels.clear(); // NeoPixelのリセット
-
+    LEDcontrol(CardID, startMillis, currentMillis);
+    LCDcontrol(CardID, startMillis, currentMillis);
+    if((currentMillis - startMillis) > 5000){
+      isCard = false; // isCardをbooleanで更新
+    }
   }
 }
 
@@ -120,6 +121,37 @@ void LEDcontrol(int ID, unsigned long StartTime, unsigned long CurrentTime){
         if(ledBrightness >= 250){
           ledBrightness = 250;
         }
+        break;
+  
+      default:
+        break;
+    }
+
+    }  
+}
+// ---------------------------------------------------------------
+void LCDcontrol(int ID, unsigned long StartTime, unsigned long CurrentTime){
+  if(StartTime == CurrentTime){
+    //ledBrightness =100;
+    //ledPosition =0;
+  }
+	switch(ID){
+      case 1:
+      if((CurrentTime - previousLCDTime) > 100){//100ms間隔で更新
+        /*kここに画面演出関数を追加*/
+        previousLCDTime = CurrentTime;
+        //M5.Lcd.println(previousLEDTime);
+
+        /*
+          ledBrightness +=10;
+          ledPosition +=1;
+        if(ledPosition >= 5){
+          ledPosition = 0;
+        }
+        if(ledBrightness >= 250){
+          ledBrightness = 250;
+        }
+        */
         break;
   
       default:
